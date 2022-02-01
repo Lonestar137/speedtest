@@ -376,10 +376,10 @@ function initUI(){
 		}
 	}
 </style>
-<title><?= getenv('TITLE') ?: 'LibreSpeed Example' ?></title>
+<title><?= getenv('TITLE') ?: 'ALDOT External Speedtest' ?></title>
 </head>
 <body onload="initServers()">
-<h1><?= getenv('TITLE') ?: 'LibreSpeed Example' ?></h1>
+<h1><?= getenv('TITLE') ?: 'ALDOT External Speedtest' ?></h1>
 <div id="loading" class="visible">
 	<p id="message"><span class="loadCircle"></span>Selecting a server...</p>
 </div>
@@ -428,7 +428,6 @@ function initUI(){
 			<img src="" id="resultsImg" />
 		</div>
 	</div>
-	<a href="https://github.com/librespeed/speedtest">Source code</a>
 </div>
 <div id="privacyPolicy" style="display:none">
     <h2>Privacy Policy</h2>

@@ -274,10 +274,10 @@ function initUI(){
 		}
 	}
 </style>
-<title><?= getenv('TITLE') ?: 'LibreSpeed Example' ?></title>
+<title><?= getenv('TITLE') ?: 'ALDOT External Speedtest' ?></title>
 </head>
 <body>
-<h1><?= getenv('TITLE') ?: 'LibreSpeed Example' ?></h1>
+<h1><?= getenv('TITLE') ?: 'ALDOT External Speedtest' ?></h1>
 <div id="testWrapper">
 	<div id="startStopBtn" onclick="startStop()"></div><br/>
 	<?php if(getenv("TELEMETRY")=="true"){ ?>
@@ -320,7 +320,6 @@ function initUI(){
 			<img src="" id="resultsImg" />
 		</div>
 	</div>
-	<a href="https://github.com/librespeed/speedtest">Source code</a>
 </div>
 <div id="privacyPolicy" style="display:none">
     <h2>Privacy Policy</h2>
