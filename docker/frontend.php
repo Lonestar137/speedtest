@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="shortcut icon" href="favicon.ico">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-sca
+lable=no" />
 <meta charset="UTF-8" />
+<link rel="shortcut icon" href="favicon.ico">
 <script type="text/javascript" src="speedtest.js"></script>
 <script type="text/javascript">
 function I(i){return document.getElementById(i);}
-
-//LIST OF TEST SERVERS. See documentation for details if needed
-var SPEEDTEST_SERVERS= <?= file_get_contents('/servers.json') ?: '[]' ?>;
-
 //INITIALIZE SPEEDTEST
 var s=new Speedtest(); //create speedtest object
 <?php if(getenv("TELEMETRY")=="true"){ ?>
@@ -23,52 +20,9 @@ s.setParameter("getIp_ispInfo",false);
 s.setParameter("getIp_ispInfo_distance","<?=getenv("DISTANCE") ?>");
 <?php } ?>
 
-//SERVER AUTO SELECTION
-function initServers(){
-    var noServersAvailable=function(){
-        I("message").innerHTML="No servers available";
-    }
-    var runServerSelect=function(){
-        s.selectServer(function(server){
-            if(server!=null){ //at least 1 server is available
-                I("loading").className="hidden"; //hide loading message
-                //populate server list for manual selection
-                for(var i=0;i<SPEEDTEST_SERVERS.length;i++){
-                    if(SPEEDTEST_SERVERS[i].pingT==-1) continue;
-                    var option=document.createElement("option");
-                    option.value=i;
-                    option.textContent=SPEEDTEST_SERVERS[i].name;
-                    if(SPEEDTEST_SERVERS[i]===server) option.selected=true;
-                    I("server").appendChild(option);
-                }
-                //show test UI
-                I("testWrapper").className="visible";
-                initUI();
-            }else{ //no servers are available, the test cannot proceed
-                noServersAvailable();
-            }
-        });
-    }
-    if(typeof SPEEDTEST_SERVERS === "string"){
-        //need to fetch list of servers from specified URL
-        s.loadServerList(SPEEDTEST_SERVERS,function(servers){
-            if(servers==null){ //failed to load server list
-                noServersAvailable();
-            }else{ //server list loaded
-                SPEEDTEST_SERVERS=servers;
-                runServerSelect();
-            }
-        });
-    }else{
-        //hardcoded server list
-        s.addTestPoints(SPEEDTEST_SERVERS);
-        runServerSelect();
-    }
-}
-
 var meterBk=/Trident.*rv:(\d+\.\d+)/i.test(navigator.userAgent)?"#EAEAEA":"#80808040";
-var dlColor="#6060AA",
-	ulColor="#616161";
+var dlColor="#b8bb26",
+	ulColor="#98971a";
 var progColor=meterBk;
 
 //CODE FOR GAUGES
@@ -86,16 +40,19 @@ function drawMeter(c,amount,bk,fg,progress,prog){
 	ctx.beginPath();
 	ctx.strokeStyle=bk;
 	ctx.lineWidth=12*sizScale;
-	ctx.arc(c.width/2,c.height-58*sizScale,c.height/1.8-ctx.lineWidth,-Math.PI*1.1,Math.PI*0.1);
+	ctx.arc(c.width/2,c.height-58*sizScale,c.height/1.8-ctx.lineWidth,-Math.PI*1.1,Math.PI
+*0.1);
 	ctx.stroke();
 	ctx.beginPath();
 	ctx.strokeStyle=fg;
 	ctx.lineWidth=12*sizScale;
-	ctx.arc(c.width/2,c.height-58*sizScale,c.height/1.8-ctx.lineWidth,-Math.PI*1.1,amount*Math.PI*1.2-Math.PI*1.1);
+	ctx.arc(c.width/2,c.height-58*sizScale,c.height/1.8-ctx.lineWidth,-Math.PI*1.1,amount*
+Math.PI*1.2-Math.PI*1.1);
 	ctx.stroke();
 	if(typeof progress !== "undefined"){
 		ctx.fillStyle=prog;
-		ctx.fillRect(c.width*0.3,c.height-16*sizScale,c.width*0.4*progress,4*sizScale);
+		ctx.fillRect(c.width*0.3,c.height-16*sizScale,c.width*0.4*progress,4*sizScale)
+;
 	}
 }
 function mbpsToAmount(s){
@@ -116,26 +73,24 @@ function startStop(){
 		s.abort();
 		data=null;
 		I("startStopBtn").className="";
-		I("server").disabled=false;
 		initUI();
 	}else{
 		//test is not running, begin
 		I("startStopBtn").className="running";
 		I("shareArea").style.display="none";
-		I("server").disabled=true;
 		s.onupdate=function(data){
             uiData=data;
 		};
 		s.onend=function(aborted){
             I("startStopBtn").className="";
-            I("server").disabled=false;
             updateUI(true);
             if(!aborted){
                 //if testId is present, show sharing panel, otherwise do nothing
                 try{
                     var testId=uiData.testId;
                     if(testId!=null){
-                        var shareURL=window.location.href.substring(0,window.location.href.lastIndexOf("/"))+"/results/?id="+testId;
+                        var shareURL=window.location.href.substring(0,window.location.href.las
+tIndexOf("/"))+"/results/?id="+testId;
                         I("resultsImg").src=shareURL;
                         I("resultsURL").value=shareURL;
                         I("testId").innerHTML=testId;
@@ -154,9 +109,11 @@ function updateUI(forced){
 	var status=uiData.testState;
 	I("ip").textContent=uiData.clientIp;
 	I("dlText").textContent=(status==1&&uiData.dlStatus==0)?"...":format(uiData.dlStatus);
-	drawMeter(I("dlMeter"),mbpsToAmount(Number(uiData.dlStatus*(status==1?oscillate():1))),meterBk,dlColor,Number(uiData.dlProgress),progColor);
+	drawMeter(I("dlMeter"),mbpsToAmount(Number(uiData.dlStatus*(status==1?oscillate():1)))
+,meterBk,dlColor,Number(uiData.dlProgress),progColor);
 	I("ulText").textContent=(status==3&&uiData.ulStatus==0)?"...":format(uiData.ulStatus);
-	drawMeter(I("ulMeter"),mbpsToAmount(Number(uiData.ulStatus*(status==3?oscillate():1))),meterBk,ulColor,Number(uiData.ulProgress),progColor);
+	drawMeter(I("ulMeter"),mbpsToAmount(Number(uiData.ulStatus*(status==3?oscillate():1)))
+,meterBk,ulColor,Number(uiData.ulProgress),progColor);
 	I("pingText").textContent=format(uiData.pingStatus);
 	I("jitText").textContent=format(uiData.jitterStatus);
 }
@@ -164,7 +121,9 @@ function oscillate(){
 	return 1+0.02*Math.sin(Date.now()/100);
 }
 //update the UI every frame
-window.requestAnimationFrame=window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.msRequestAnimationFrame||(function(callback,element){setTimeout(callback,1000/60);});
+window.requestAnimationFrame=window.requestAnimationFrame||window.webkitRequestAnimationFrame|
+|window.mozRequestAnimationFrame||window.msRequestAnimationFrame||(function(callback,element){
+setTimeout(callback,1000/60);});
 function frame(){
 	requestAnimationFrame(frame);
 	updateUI();
@@ -184,41 +143,22 @@ function initUI(){
 <style type="text/css">
 	html,body{
 		border:none; padding:0; margin:0;
-		background:#FFFFFF;
-		color:#202020;
+		background:#2b2b2b;
+		color:#d5c4a1;
 	}
 	body{
 		text-align:center;
 		font-family:"Roboto",sans-serif;
 	}
 	h1{
-		color:#404040;
-	}
-	#loading{
-		background-color:#FFFFFF;
-		color:#404040;
-		text-align:center;
-	}
-	span.loadCircle{
-		display:inline-block;
-		width:2em;
-		height:2em;
-		vertical-align:middle;
-		background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAP1BMVEUAAAB2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZyFzwnAAAAFHRSTlMAEvRFvX406baecwbf0casimhSHyiwmqgAAADpSURBVHja7dbJbQMxAENRahnN5lkc//5rDRAkDeRgHszXgACJoKiIiIiIiIiIiIiIiIiIiIj4HHspsrpAVhdVVguzrA4OWc10WcEqpwKbnBo0OU1Q5NSpsoJFTgOecrrdEag85DRgktNqfoEdTjnd7hrEHMEJvmRUYJbTYk5Agy6nau6Abp5Cm7mDBtRdPi9gyKdU7w4p1fsLvyqs8hl4z9/w3n/Hmr9WoQ65lAU4d7lMYOz//QboRR5jBZibLMZdAR6O/Vfa1PlxNr3XdS3HzK/HVPRu/KnLs8iAOh993VpRRERERMT/fAN60wwWaVyWwAAAAABJRU5ErkJggg==');
-		background-size:2em 2em;
-		margin-right:0.5em;
-		animation: spin 0.6s linear infinite;
-	}
-	@keyframes spin{
-		0%{transform:rotate(0deg);}
-		100%{transform:rotate(359deg);}
+		color:#a6a6a6;
 	}
 	#startStopBtn{
 		display:inline-block;
 		margin:0 auto;
-		color:#6060AA;
+		color:#ebdbb2;
 		background-color:rgba(0,0,0,0);
-		border:0.15em solid #6060FF;
+		border:0.15em solid #cc241d;
 		border-radius:0.3em;
 		transition:all 0.3s;
 		box-sizing:border-box;
@@ -240,13 +180,6 @@ function initUI(){
 	}
 	#startStopBtn.running:before{
 		content:"Abort";
-	}
-	#serverArea{
-		margin-top:1em;
-	}
-	#server{
-		font-size:1em;
-		padding:0.2em;
 	}
 	#test{
 		margin-top:2em;
@@ -349,65 +282,37 @@ function initUI(){
 			font-size:0.8em;
 		}
 	}
-	div.visible{
-		animation: fadeIn 0.4s;
-		display:block;
-	}
-	div.hidden{
-		animation: fadeOut 0.4s;
-		display:none;
-	}
-	@keyframes fadeIn{
-		0%{
-			opacity:0;
-		}
-		100%{
-			opacity:1;
-		}
-	}
-	@keyframes fadeOut{
-		0%{
-			display:block;
-			opacity:1;
-		}
-		100%{
-			display:block;
-			opacity:0;
-		}
-	}
 </style>
-<title><?= getenv('TITLE') ?: 'ALDOT External Speedtest' ?></title>
+<title><?= getenv('TITLE') ?: 'LibreSpeed Example' ?></title>
 </head>
-<body onload="initServers()">
-<h1><?= getenv('TITLE') ?: 'ALDOT External Speedtest' ?></h1>
-<div id="loading" class="visible">
-	<p id="message"><span class="loadCircle"></span>Selecting a server...</p>
-</div>
-<div id="testWrapper" class="hidden">
-	<div id="startStopBtn" onclick="startStop()"></div>
+<body>
+
+<h1>ALDOT External Speedtest</h1>
+<div id="testWrapper">
+	<div id="startStopBtn" onclick="startStop()"></div><br/>
 	<?php if(getenv("TELEMETRY")=="true"){ ?>
         <a class="privacy" href="#" onclick="I('privacyPolicy').style.display=''">Privacy</a>
 	<?php } ?>
-	<div id="serverArea">
-		Server: <select id="server" onchange="s.setSelectedServer(SPEEDTEST_SERVERS[this.value])"></select>
-	</div>
 	<div id="test">
 		<div class="testGroup">
-            <div class="testArea2">
+			<div class="testArea2">
 				<div class="testName">Ping</div>
-				<div id="pingText" class="meterText" style="color:#AA6060"></div>
+				<div id="pingText" class="meterText" style="color:#cc241d"></d
+iv>
 				<div class="unit">ms</div>
 			</div>
 			<div class="testArea2">
 				<div class="testName">Jitter</div>
-				<div id="jitText" class="meterText" style="color:#AA6060"></div>
+				<div id="jitText" class="meterText" style="color:#cc241d"></di
+v>
 				<div class="unit">ms</div>
 			</div>
 		</div>
 		<div class="testGroup">
 			<div class="testArea">
 				<div class="testName">Download</div>
-				<canvas id="dlMeter" class="meter"></canvas>
+				<canvas id="dlMeter" class="meter" style="color: af3131;"></ca
+nvas>
 				<div id="dlText" class="meterText"></div>
 				<div class="unit">Mbps</div>
 			</div>
@@ -424,7 +329,9 @@ function initUI(){
 		<div id="shareArea" style="display:none">
 			<h3>Share results</h3>
 			<p>Test ID: <span id="testId"></span></p>
-			<input type="text" value="" id="resultsURL" readonly="readonly" onclick="this.select();this.focus();this.select();document.execCommand('copy');alert('Link copied')"/>
+			<input type="text" value="" id="resultsURL" readonly="readonly" onclic
+k="this.select();this.focus();this.select();document.execCommand('copy');alert('Link copied')"
+/>
 			<img src="" id="resultsImg" />
 		</div>
 	</div>
@@ -451,7 +358,8 @@ function initUI(){
         Data collected through this service is used to:
         <ul>
             <li>Allow sharing of test results (sharable image for forums, etc.)</li>
-            <li>To improve the service offered to you (for instance, to detect problems on our side)</li>
+            <li>To improve the service offered to you (for instance, to detect problems on our
+ side)</li>
         </ul>
         No personal information is disclosed to third parties.
     </p>
@@ -461,11 +369,17 @@ function initUI(){
     </p>
     <h4>Data removal</h4>
     <p>
-        If you want to have your information deleted, you need to provide either the ID of the test or your IP address. This is the only way to identify your data, without this information we won't be able to comply with your request.<br/><br/>
-        Contact this email address for all deletion requests: <a href="mailto:<?=getenv("EMAIL") ?>"><?=getenv("EMAIL") ?></a>.
+        If you want to have your information deleted, you need to provide either the ID of the
+ test or your IP address. This is the only way to identify your data, without this information
+ we won't be able to comply with your request.<br/><br/>
+        Contact this email address for all deletion requests: <a href="mailto:<?=getenv("EMAIL
+") ?>"><?=getenv("EMAIL") ?></a>.
     </p>
     <br/><br/>
-    <a class="privacy" href="#" onclick="I('privacyPolicy').style.display='none'">Close</a><br/>
+    <a class="privacy" href="#" onclick="I('privacyPolicy').style.display='none'">Close</a><br
+/>
 </div>
+<script type="text/javascript">setTimeout(function(){initUI()},100);</script>
 </body>
 </html>
+
