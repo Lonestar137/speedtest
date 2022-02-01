@@ -274,10 +274,10 @@ function initUI(){
 		}
 	}
 </style>
-<title><?= getenv('TITLE') ?: 'ALDOT External Speedtest' ?></title>
+<title>ALDOT External Speedtest</title>
 </head>
 <body>
-<h1><?= getenv('TITLE') ?: 'ALDOT External Speedtest' ?></h1>
+<h1>ALDOT External Speedtest</h1>
 <div id="testWrapper">
 	<div id="startStopBtn" onclick="startStop()"></div><br/>
 	<?php if(getenv("TELEMETRY")=="true"){ ?>
