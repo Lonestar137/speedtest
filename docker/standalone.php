@@ -20,8 +20,8 @@ s.setParameter("getIp_ispInfo_distance","<?=getenv("DISTANCE") ?>");
 <?php } ?>
 
 var meterBk=/Trident.*rv:(\d+\.\d+)/i.test(navigator.userAgent)?"#EAEAEA":"#80808040";
-var dlColor="#6060AA",
-	ulColor="#616161";
+var dlColor="#b8bb26",
+	ulColor="#98971a";
 var progColor=meterBk;
 
 //CODE FOR GAUGES
@@ -134,22 +134,22 @@ function initUI(){
 <style type="text/css">
 	html,body{
 		border:none; padding:0; margin:0;
-		background:#FFFFFF;
-		color:#202020;
+		background:#2b2b2b;
+		color:#d5c4a1;
 	}
 	body{
 		text-align:center;
 		font-family:"Roboto",sans-serif;
 	}
 	h1{
-		color:#404040;
+		color:#a6a6a6;
 	}
 	#startStopBtn{
 		display:inline-block;
 		margin:0 auto;
-		color:#6060AA;
+		color:#ebdbb2;
 		background-color:rgba(0,0,0,0);
-		border:0.15em solid #6060FF;
+		border:0.15em solid #cc241d;
 		border-radius:0.3em;
 		transition:all 0.3s;
 		box-sizing:border-box;
@@ -287,12 +287,12 @@ function initUI(){
 		<div class="testGroup">
 			<div class="testArea2">
 				<div class="testName">Ping</div>
-				<div id="pingText" class="meterText" style="color:#AA6060"></div>
+				<div id="pingText" class="meterText" style="color:#cc241d"></div>
 				<div class="unit">ms</div>
 			</div>
 			<div class="testArea2">
 				<div class="testName">Jitter</div>
-				<div id="jitText" class="meterText" style="color:#AA6060"></div>
+				<div id="jitText" class="meterText" style="color:#cc241d"></div>
 				<div class="unit">ms</div>
 			</div>
 		</div>

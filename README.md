@@ -41,6 +41,8 @@ A template to build an Android client for your LibreSpeed installation is availa
 ## Docker
 A docker image is available on the [Docker Hub](https://registry.hub.docker.com/r/adolfintel/speedtest), see `doc_docker.md` for more info about it
 
+Run the `build.sh` script to get started.  The script will take the files from /docker and place them in the appropriate drive, then start the service in a Docker container.
+
 ## Go backend
 A Go implementation is available in the [`speedtest-go`](https://github.com/librespeed/speedtest-go) repo, maintained by [Maddie Zhan](https://github.com/maddie).
 

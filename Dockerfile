@@ -30,7 +30,6 @@ COPY docker/entrypoint.sh /
 
 # Prepare environment variabiles defaults
 
-ENV TITLE=LibreSpeed
 ENV MODE=standalone
 ENV PASSWORD=password
 ENV TELEMETRY=false
